@@ -1,11 +1,20 @@
 ---
 name: bmc
-description: Generate a Business Model Canvas (Alexander Osterwalder / Strategyzer) as a standalone HTML file with pixel-accurate layout, color-coded sections, and print-to-PDF support. Use when the user wants to create, visualize, or export a business model canvas.
+description: Generate a Business Model Canvas (Alexander Osterwalder / Strategyzer) as HTML or PowerPoint (.pptx) with pixel-accurate layout, color-coded sections, and print-to-PDF support. Use when the user wants to create, visualize, or export a business model canvas.
 ---
 
 # Business Model Canvas Generator
 
-You are a business strategy expert and visualization specialist. Your job is to produce a **pixel-accurate** recreation of the Alexander Osterwalder / Strategyzer Business Model Canvas as a standalone HTML file.
+You are a business strategy expert and visualization specialist. Your job is to produce a **pixel-accurate** recreation of the Alexander Osterwalder / Strategyzer Business Model Canvas.
+
+## Supported Output Formats
+
+| Format | Output | How |
+|--------|--------|-----|
+| **HTML** (default) | `bmc-output.html` | Self-contained HTML file, open in browser or print to PDF |
+| **PowerPoint** | `bmc-output.pptx` | Generated via Python script using `python-pptx` |
+
+If the user asks for PowerPoint / pptx / slides, use the PowerPoint template. Otherwise default to HTML.
 
 ## When To Use
 
@@ -15,6 +24,7 @@ Use this skill when the user asks to:
 - Visualize a business model
 - Create a Strategyzer / Osterwalder canvas
 - Map out a business model for a company or idea
+- Export a business model as PowerPoint / pptx / slides
 
 ## Workflow
 
@@ -22,11 +32,13 @@ Use this skill when the user asks to:
 
 2. **Fill all 9 blocks** with concise, bullet-pointed content. Each block should have 3-6 bullet points that are specific and actionable — not generic filler.
 
-3. **Generate the HTML file** using the exact template below, substituting the content into each block.
+3. **Determine output format**: Use PowerPoint if the user mentions pptx/powerpoint/slides, otherwise default to HTML.
 
-4. **Write the file** to `bmc-output.html` (or a name the user specifies) in the current working directory.
+4. **Generate the file** using the appropriate template below, substituting the content into each block.
 
-5. **Tell the user** they can open it in any browser, and it prints cleanly to PDF at landscape A3/A4.
+5. **Write the file(s)** to the current working directory. For PowerPoint, write the Python script and run it.
+
+6. **Tell the user** where the output file is and how to open it.
 
 ---
 
@@ -410,5 +422,224 @@ Before writing the file, verify:
 - All 9 blocks have content (no empty blocks)
 - Bullet points are specific to the business, not generic
 - Company name appears in title and heading
-- The HTML is valid and self-contained (no external dependencies)
-- Print styles are preserved for PDF export
+- For HTML: valid and self-contained (no external dependencies), print styles preserved
+- For PowerPoint: script runs without errors, .pptx opens in PowerPoint/Google Slides/Keynote
+
+---
+
+## PowerPoint Template
+
+When the user requests PowerPoint / pptx / slides output, generate a Python script that uses `python-pptx` to create the canvas. Write the script to `generate_bmc.py`, then run it.
+
+**First, ensure python-pptx is installed:**
+
+```bash
+pip install python-pptx
+```
+
+**Then generate and run this script** (replacing COMPANY_NAME and all placeholder bullets with real content):
+
+```python
+from pptx import Presentation
+from pptx.util import Inches, Pt, Emu
+from pptx.dml.color import RGBColor
+from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
+
+prs = Presentation()
+prs.slide_width = Inches(16)
+prs.slide_height = Inches(9)
+
+slide = prs.slides.add_slide(prs.slide_layouts[6])  # Blank layout
+
+# ========== COLORS ==========
+COLORS = {
+    "infrastructure": {"bg": RGBColor(0xDB, 0xEA, 0xFE), "icon_bg": RGBColor(0x25, 0x63, 0xEB), "bullet": RGBColor(0x93, 0xC5, 0xFD)},
+    "offering":       {"bg": RGBColor(0xED, 0xE9, 0xFE), "icon_bg": RGBColor(0x7C, 0x3A, 0xED), "bullet": RGBColor(0xC4, 0xB5, 0xFD)},
+    "customer":       {"bg": RGBColor(0xD1, 0xFA, 0xE5), "icon_bg": RGBColor(0x05, 0x96, 0x69), "bullet": RGBColor(0x6E, 0xE7, 0xB7)},
+    "cost":           {"bg": RGBColor(0xFE, 0xE2, 0xE2), "icon_bg": RGBColor(0xDC, 0x26, 0x26), "bullet": RGBColor(0xFC, 0xA5, 0xA5)},
+    "revenue":        {"bg": RGBColor(0xFE, 0xF3, 0xC7), "icon_bg": RGBColor(0xD9, 0x77, 0x06), "bullet": RGBColor(0xFC, 0xD3, 0x4D)},
+}
+WHITE = RGBColor(0xFF, 0xFF, 0xFF)
+DARK = RGBColor(0x1A, 0x1A, 0x2E)
+GRAY = RGBColor(0x4B, 0x55, 0x63)
+BORDER = RGBColor(0xE5, 0xE7, 0xEB)
+
+# ========== LAYOUT GRID ==========
+# Canvas area: leave margins for title
+MARGIN_LEFT = Inches(0.5)
+MARGIN_TOP = Inches(1.2)
+CANVAS_W = Inches(15.0)
+CANVAS_H = Inches(7.3)
+
+# 10 columns, 6 rows
+COL_W = CANVAS_W / 10
+ROW_H = CANVAS_H / 6
+
+# Block positions: (col_start, row_start, col_span, row_span, color_key)
+BLOCKS = {
+    "Key Partners":            (0, 0, 2, 4, "infrastructure"),
+    "Key Activities":          (2, 0, 2, 2, "infrastructure"),
+    "Key Resources":           (2, 2, 2, 2, "infrastructure"),
+    "Value Propositions":      (4, 0, 2, 4, "offering"),
+    "Customer Relationships":  (6, 0, 2, 2, "customer"),
+    "Channels":                (6, 2, 2, 2, "customer"),
+    "Customer Segments":       (8, 0, 2, 4, "customer"),
+    "Cost Structure":          (0, 4, 5, 2, "cost"),
+    "Revenue Streams":         (5, 4, 5, 2, "revenue"),
+}
+
+# ========== CONTENT — REPLACE THESE ==========
+CONTENT = {
+    "Key Partners": [
+        "Partner item 1",
+        "Partner item 2",
+        "Partner item 3",
+    ],
+    "Key Activities": [
+        "Activity item 1",
+        "Activity item 2",
+        "Activity item 3",
+    ],
+    "Key Resources": [
+        "Resource item 1",
+        "Resource item 2",
+        "Resource item 3",
+    ],
+    "Value Propositions": [
+        "Value prop item 1",
+        "Value prop item 2",
+        "Value prop item 3",
+    ],
+    "Customer Relationships": [
+        "Relationship item 1",
+        "Relationship item 2",
+        "Relationship item 3",
+    ],
+    "Channels": [
+        "Channel item 1",
+        "Channel item 2",
+        "Channel item 3",
+    ],
+    "Customer Segments": [
+        "Segment item 1",
+        "Segment item 2",
+        "Segment item 3",
+    ],
+    "Cost Structure": [
+        "Cost item 1",
+        "Cost item 2",
+        "Cost item 3",
+    ],
+    "Revenue Streams": [
+        "Revenue item 1",
+        "Revenue item 2",
+        "Revenue item 3",
+    ],
+}
+
+# ========== TITLE ==========
+txBox = slide.shapes.add_textbox(MARGIN_LEFT, Inches(0.3), CANVAS_W, Inches(0.5))
+tf = txBox.text_frame
+tf.word_wrap = True
+p = tf.paragraphs[0]
+p.text = "COMPANY_NAME"
+p.font.size = Pt(28)
+p.font.bold = True
+p.font.color.rgb = DARK
+p.alignment = PP_ALIGN.CENTER
+
+txBox2 = slide.shapes.add_textbox(MARGIN_LEFT, Inches(0.75), CANVAS_W, Inches(0.3))
+tf2 = txBox2.text_frame
+p2 = tf2.paragraphs[0]
+p2.text = "Business Model Canvas"
+p2.font.size = Pt(14)
+p2.font.color.rgb = RGBColor(0x6B, 0x72, 0x80)
+p2.alignment = PP_ALIGN.CENTER
+
+
+def add_block(name, col, row, col_span, row_span, color_key, items):
+    """Add a single BMC block as a shape with text."""
+    left = MARGIN_LEFT + int(col * COL_W)
+    top = MARGIN_TOP + int(row * ROW_H)
+    width = int(col_span * COL_W)
+    height = int(row_span * ROW_H)
+
+    colors = COLORS[color_key]
+
+    # Background rectangle
+    shape = slide.shapes.add_shape(1, left, top, width, height)  # 1 = rectangle
+    shape.fill.solid()
+    shape.fill.fore_color.rgb = WHITE
+    shape.line.color.rgb = BORDER
+    shape.line.width = Pt(1)
+
+    # Color accent bar at top
+    accent = slide.shapes.add_shape(1, left, top, width, Inches(0.06))
+    accent.fill.solid()
+    accent.fill.fore_color.rgb = colors["icon_bg"]
+    accent.line.fill.background()
+
+    # Text frame
+    txBox = slide.shapes.add_textbox(
+        left + Inches(0.15),
+        top + Inches(0.15),
+        width - Inches(0.3),
+        height - Inches(0.3),
+    )
+    tf = txBox.text_frame
+    tf.word_wrap = True
+
+    # Block label
+    p = tf.paragraphs[0]
+    p.text = name.upper()
+    p.font.size = Pt(8)
+    p.font.bold = True
+    p.font.color.rgb = RGBColor(0x37, 0x41, 0x51)
+    p.space_after = Pt(6)
+
+    # Bullet items
+    for item in items:
+        p = tf.add_paragraph()
+        p.text = f"  {item}"
+        p.font.size = Pt(9)
+        p.font.color.rgb = GRAY
+        p.space_before = Pt(2)
+        p.space_after = Pt(2)
+        p.level = 0
+
+
+# ========== BUILD BLOCKS ==========
+for name, (col, row, col_span, row_span, color_key) in BLOCKS.items():
+    add_block(name, col, row, col_span, row_span, color_key, CONTENT[name])
+
+# ========== FOOTER ==========
+footer = slide.shapes.add_textbox(MARGIN_LEFT, Inches(8.6), CANVAS_W, Inches(0.3))
+ft = footer.text_frame
+fp = ft.paragraphs[0]
+fp.text = "Business Model Canvas template based on Strategyzer AG - strategyzer.com"
+fp.font.size = Pt(8)
+fp.font.color.rgb = RGBColor(0x9C, 0xA3, 0xAF)
+fp.alignment = PP_ALIGN.CENTER
+
+# ========== SAVE ==========
+prs.save("bmc-output.pptx")
+print("Created bmc-output.pptx")
+```
+
+### PowerPoint Generation Instructions
+
+When generating PowerPoint output:
+
+1. **Replace `COMPANY_NAME`** in the title with the actual company/project name.
+
+2. **Replace all items in the `CONTENT` dictionary** with real, specific bullet points for the business.
+
+3. **Write the script** to `generate_bmc.py` in the current working directory.
+
+4. **Run `pip install python-pptx`** if not already installed, then **run the script** with `python generate_bmc.py`.
+
+5. **Tell the user** the file is at `bmc-output.pptx` and can be opened in PowerPoint, Google Slides, or Keynote.
+
+6. **Do NOT modify the layout constants, color scheme, or block positions** — they match the Osterwalder/Strategyzer grid.
+
+7. **If generating both formats**, produce both `bmc-output.html` and `bmc-output.pptx`.

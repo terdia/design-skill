@@ -1,13 +1,13 @@
 # Business Model Canvas for AI
 
-AI skills that teach your coding assistant how to generate professional Business Model Canvas (Osterwalder/Strategyzer) visualizations as self-contained HTML files.
+AI skills that teach your coding assistant how to generate professional Business Model Canvas (Osterwalder/Strategyzer) visualizations as HTML or PowerPoint files.
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Skills](https://img.shields.io/badge/skills-1-green.svg)](skills/)
 
 ## What is this?
 
-Structured skill files that AI coding assistants read to generate pixel-accurate Business Model Canvas visualizations. Each skill contains the full HTML/CSS template and step-by-step instructions your AI assistant uses to produce a self-contained HTML file you can open in any browser or print to PDF.
+Structured skill files that AI coding assistants read to generate pixel-accurate Business Model Canvas visualizations. Each skill contains full templates and step-by-step instructions your AI assistant uses to produce either a self-contained HTML file (open in browser, print to PDF) or a PowerPoint .pptx file (open in PowerPoint, Google Slides, or Keynote).
 
 Supports Claude Code, Cursor, Codex, and 38+ other AI tools via `npx skills add`.
 
@@ -53,29 +53,35 @@ After installing, ask your AI assistant:
 - "Create a business model canvas for Airbnb"
 - "Generate a BMC for my SaaS startup"
 - "Build a Strategyzer canvas for [company name]"
+- "Create a business model canvas as PowerPoint for [company name]"
 
 In Claude Code you can also use the slash command:
 ```
 /bmc Airbnb
 ```
 
-Your assistant reads the skill, gathers your business model details, and writes a complete HTML file.
+Your assistant reads the skill, gathers your business model details, and writes an HTML or PowerPoint file.
 
 ## What You Get
 
-A single self-contained HTML file (`bmc-output.html`) with:
-
+**HTML** (`bmc-output.html`) — default:
 - Pixel-accurate Osterwalder 9-block grid layout
 - Color-coded sections (blue = infrastructure, purple = value prop, green = customer, red/amber = financials)
 - Icons for each block
 - Print-optimized CSS (landscape A3/A4 PDF)
 - Zero external dependencies
 
+**PowerPoint** (`bmc-output.pptx`) — when you ask for slides/pptx:
+- Same pixel-accurate 9-block grid layout on a 16:9 slide
+- Color-coded accent bars per section
+- Opens in PowerPoint, Google Slides, or Keynote
+- Generated via `python-pptx` (auto-installed)
+
 ## Available Skills
 
 | Skill | Directory | Description | Status |
 |-------|-----------|-------------|--------|
-| Business Model Canvas | `skills/bmc/` | Generate a pixel-accurate Osterwalder/Strategyzer BMC as self-contained HTML | Available |
+| Business Model Canvas | `skills/bmc/` | Generate a pixel-accurate Osterwalder/Strategyzer BMC as HTML or PowerPoint | Available |
 
 ## How Skills Work
 
