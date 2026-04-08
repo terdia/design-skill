@@ -1,0 +1,7 @@
+{
+  "name": "business-model-canvas",
+  "slug": "bmc",
+  "description": "Generate pixel-accurate Osterwalder/Strategyzer Business Model Canvas visualizations as self-contained HTML files.",
+  "category": "productivity",
+  "tags": ["business-model", "strategy", "canvas", "visualization"]
+}

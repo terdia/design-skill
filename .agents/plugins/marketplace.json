@@ -1,0 +1,19 @@
+{
+  "name": "business-model-canvas",
+  "interface": {
+    "displayName": "Business Model Canvas"
+  },
+  "plugins": [
+    {
+      "name": "bmc",
+      "source": {
+        "source": "local",
+        "path": "./plugins/bmc"
+      },
+      "policy": {
+        "installation": "AVAILABLE"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

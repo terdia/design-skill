@@ -1,0 +1,8 @@
+{
+  "name": "business-model-canvas",
+  "description": "AI skills for generating professional Business Model Canvas visualizations — pixel-accurate Osterwalder/Strategyzer layout as self-contained HTML.",
+  "version": "1.0.0",
+  "author": "Terry Osayawe",
+  "keywords": ["business-model-canvas", "bmc", "strategyzer", "osterwalder", "strategy"],
+  "logo": "assets/logo.png"
+}
